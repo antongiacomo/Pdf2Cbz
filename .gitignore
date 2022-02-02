@@ -1,2 +1,5 @@
 *.pdf
 *.cbz
+*.zip
+out
+source
