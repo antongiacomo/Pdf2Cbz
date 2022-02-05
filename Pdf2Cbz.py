@@ -51,18 +51,13 @@ def zip_images(zip_file_name, output_folder_path):
 
     files = select_files_from_path(output_folder_path, ".jpg")
 
-    for file in files:
+    for file in files[0]:
             filepath = output_folder_path + os.sep + file
             zipObj.write(filepath)
 
     zipObj.close()
 
-def main():
-
-    input_folder_path = "source2"
-    output_folder_path = "out"
-    zip_file_name = "sample.cbz"
-
+def pdf2cbz(input_folder_path, output_folder_path, zip_file_name = "pdf2cbz_file.cbz"):
     create_out_directory_if_not_exists(output_folder_path)
 
     start = time.time()
@@ -76,6 +71,14 @@ def main():
  
     end = time.time()
     print(f"Finishing time: {end-start}")
+
+def main():
+
+    input_folder_path = "source2"
+    output_folder_path = "out"
+    zip_file_name = "sample.cbz"
+
+    pdf2cbz(input_folder_path, output_folder_path, zip_file_name)
 
 
 if __name__ == "__main__":
