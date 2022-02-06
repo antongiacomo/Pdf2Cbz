@@ -3,6 +3,7 @@
 import os
 import os.path
 import time
+import shutil
 from math import floor
 from zipfile import ZipFile
 from natsort import os_sorted
@@ -70,7 +71,8 @@ class Pdf2Cbz:
         zipObj.close()
 
     def delete_images(self):
-        os.remove(self._image_output_path)
+        #os.remove(self._image_output_path)
+        shutil.rmtree(self._image_output_path)
 
     def convert(self):
 
