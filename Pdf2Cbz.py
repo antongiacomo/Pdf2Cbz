@@ -32,13 +32,10 @@ class Pdf2Cbz:
     def set_update_handler(self, update_handler: UpdateHandler):
         self._update_handler = update_handler
 
-    # def create_out_directory_if_not_exists(self):
-    #     if not os.path.exists(self._image_output_path):
-    #         os.mkdir(self._image_output_path)
-
     def conver_pdf_page_to_image(self, filepath, i):
 
-        print("Start convert {}".format(filepath))
+        #print("Start convert {}".format(filepath))
+        self._update_handler.start_pdf2image(filepath)
         pdf_path_to_images(
             filepath,
             thread_count=self._cores_number,
@@ -46,7 +43,8 @@ class Pdf2Cbz:
             output_file=f"comic_{i}_",
             fmt="JPEG",
         )
-        print("Finished extracting images from {}".format(filepath))
+        #print("Finished extracting images from {}".format(filepath))
+        self._update_handler.finish_pdf2image(filepath)
 
     def convert_pdf2image_in_folder(self):
         
@@ -58,23 +56,19 @@ class Pdf2Cbz:
 
             self.conver_pdf_page_to_image(filepath, i)
 
-            self._update_handler.update(i,files_count)
+            self._update_handler.update_count(i,files_count)
 
     def zip_images(self):
 
         zipObj = ZipFile(self._zip_file_name, "w")
 
-        files = select_files_from_path(self._image_output_path, ".jpg")
+        files, files_count = select_files_from_path(self._image_output_path, ".jpg")
 
-        for file in files[0]:
+        for file in files:
                 filepath = self._image_output_path + os.sep + file
                 zipObj.write(filepath)
 
         zipObj.close()
-
-    # def delete_images(self):
-    #     #os.remove(self._image_output_path)
-    #     shutil.rmtree(self._image_output_path)
 
     def convert(self):
 
