@@ -10,6 +10,7 @@ from natsort import os_sorted
 from pdf2image import convert_from_path as pdf_path_to_images
 
 from UpdateHandler import UpdateHandler
+from DirectoryManager import DirectoryManager
 
 class Pdf2Cbz:
     _input_folder_path = None
@@ -20,6 +21,7 @@ class Pdf2Cbz:
     _update_handler = UpdateHandler()
 
     def __init__(self, input_folder_path, zip_file_name = "pdf2cbz_file.cbz", image_output_path = "out"):
+        
         self._input_folder_path = input_folder_path
         self._zip_file_name = zip_file_name
         self._image_output_path = image_output_path
@@ -30,9 +32,9 @@ class Pdf2Cbz:
     def set_update_handler(self, update_handler: UpdateHandler):
         self._update_handler = update_handler
 
-    def create_out_directory_if_not_exists(self):
-        if not os.path.exists(self._image_output_path):
-            os.mkdir(self._image_output_path)
+    # def create_out_directory_if_not_exists(self):
+    #     if not os.path.exists(self._image_output_path):
+    #         os.mkdir(self._image_output_path)
 
     def conver_pdf_page_to_image(self, filepath, i):
 
@@ -70,25 +72,25 @@ class Pdf2Cbz:
 
         zipObj.close()
 
-    def delete_images(self):
-        #os.remove(self._image_output_path)
-        shutil.rmtree(self._image_output_path)
+    # def delete_images(self):
+    #     #os.remove(self._image_output_path)
+    #     shutil.rmtree(self._image_output_path)
 
     def convert(self):
 
         start = time.time()
 
-        self.create_out_directory_if_not_exists()
+        DirectoryManager.create_out_directory_if_not_exists(self._image_output_path)
         self.convert_pdf2image_in_folder()
         self.zip_images()
-        self.delete_images()
+        DirectoryManager.delete_images_folder(self._image_output_path)
     
         end = time.time()
         print(f"Elapsed time: {end-start} s")
 
 def select_files_from_path(folder_path, files_type):
 
-    files = [f for f in os.listdir(folder_path) if (os.path.isfile(os.path.join(folder_path, f)) and f.endswith(files_type))]
+    files = [file for file in os.listdir(folder_path) if DirectoryManager.check_is_file_and_type( file, folder_path, files_type)]
     files = os_sorted(files)
     files_count = len(files)
     return files, files_count
